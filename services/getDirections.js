@@ -23,64 +23,50 @@ async function getDirections(_markers) {
         let origin = _markers[0].text, destination = _markers[1].text;
         if(isMonterrey(origin)){
             
-            if( isHouston(destination) || isDallas(destination) ){
-                splitted = true;
-                console.log("splitted true");
-
-                // Split direction: Mty - Juarez-Lincoln International Bridge, Juarez-Lincoln International Bridge - [Houston | Dallas]
-                bridge = {
-                    name: "Juarez-Lincoln International Bridge",
-                    id: 'ChIJX_GqeisiYYYRsTJLRTR7jb0'
-                }
-
-                return splitPromise01();
+            bridge = {
+                name: "Juarez-Lincoln International Bridge",
+                id: 'ChIJX_GqeisiYYYRsTJLRTR7jb0'
             }
-            else if( isBrimingham(destination) ){
-                splitted = true;
 
-                let arrDestinations = [{
-                    name: _markers[0].text,
-                    id: _markers[0].place_id
-                }];
+            let pricePerMile = 0;
+            if( isIndiana(destination) || isKentucky(destination) || isMichigan(destination) || isNewYork(destination) || 
+                isPennsylvania(destination) || isWestVirginia(destination) || isOhio(destination) ){
+                pricePerMile = 3.2;
+            }
+            else if( isOklahoma(destination) ){
+                pricePerMile = 3.3;
+            }
+            else if( isBrimingham(destination) || isMontgomery(destination) || isMobile_AL(destination) || isArkansas(destination) || isIllinois(destination)
+                || isSouthCarolina(destination) || isWisconsin(destination) ){
+                pricePerMile = 3.4;
+            }                        
+            else if( isKansas(destination) ){
+                pricePerMile = 3.45;
+            }
+            else if( isLouisiana(destination) || isGeorgia(destination) ){
+                pricePerMile = 3.5;
+            }            
+            else if( isFlorida(destination) ){
+                pricePerMile = 3.75;
+            }
+            else if( isArizona(destination) || isMinnesota(destination) ){
+                pricePerMile = 5;
+            }
+            else if( isDallas(destination) || isNewMexico(destination) || isTexas(destination) ){
+                pricePerMile = 5.5;
+            }
+            else if( isColorado(destination) || isMontana(destination) ){
+                pricePerMile = 6;
+            }
 
-                // Mty - Juarez-Lincoln Bridge                
-                arrDestinations.push({
-                    name: "Juarez-Lincoln International Bridge",
-                    id: 'ChIJX_GqeisiYYYRsTJLRTR7jb0'
+            if(pricePerMile){
+                return splitPromise01({
+                    pricePerMile: pricePerMile
                 });
-
-                // Bridge - Louisiana 
-                arrDestinations.push({
-                    name: 'Louisiana', // Louisiana State Line
-                    id: 'ChIJEyD-AwD_O4YRol53pzYG-iE'
-                });
-
-                return splitPromiseArray(arrDestinations);
-
-                // Louisiana - Mississippi
-                arrDestinations.push({
-                    name: 'Mississippi', // 70264 Atlas Rd, Pearl River, LA 70452, USA
-                    id: 'ChIJG-1e-AnqnYgRZ9qrAafvd6s'
-                });
-
-                // Mississippi - Alabama
-                arrDestinations.push({
-                    name: 'Alabama',
-                    id: 'ChIJoUzv7u5bhIgRNyN7-4seeYE'
-                });
-
-                // Alabama - Brimingham
-                arrDestinations.push({
-                    name: _markers[1].text,
-                    id: _markers[1].place_id
-                });
-
-                //return splitPromiseArray(arrDestinations);
             }
         }
         else if(isRamosArizpe(origin)){
             if(isHouston(destination)){
-                splitted = true;
                 
                 // Split direction: Ramos Arizpe Coahuila - Juarez-Lincoln International Bridge, Juarez-Lincoln International Bridge - [Houston]
                 bridge = {
@@ -88,7 +74,9 @@ async function getDirections(_markers) {
                     id: 'ChIJX_GqeisiYYYRsTJLRTR7jb0'
                 }
 
-                return splitPromise01();
+                return splitPromise01({
+                    pricePerMile: 5.5
+                });
             }
         }
 
@@ -140,7 +128,9 @@ async function getDirections(_markers) {
             });
         }
 
-        function splitPromise01(){
+        function splitPromise01(jData){
+            console.log("splitPromise01");
+            if(!jData) jData = {}
             return new Promise((resolve) => {
                 // Distance 01 
                 distancematrix({
@@ -163,7 +153,7 @@ async function getDirections(_markers) {
                                 console.log("callback 02");
                                 result02.origin = bridge.name;
                                 result02.destination = destination;
-                                result02.pricePerMile = 5.5;
+                                result02.pricePerMile = jData.pricePerMile || 0;
 
                                 if(result02.price == 0){
                                     result02.price = result02.pricePerMile * result02.distance_miles;
@@ -185,51 +175,6 @@ async function getDirections(_markers) {
                         });
                     }
                 });
-            });
-        }
-
-        function splitPromiseArray(arrDestinations){
-            console.log("splitPromiseArray");
-
-            return new Promise((resolve) => {
-                let jResolve = {
-                    testing: "asdf",
-                    breakdown: []
-                }
-
-                let index = 0;
-                _next();
-
-                function _next(){
-                    console.log("index: "+index);
-
-                    if(index+1 < arrDestinations.length){
-
-                        let originName = arrDestinations[index].name, destinationName = arrDestinations[index+1].name;
-                        distancematrix({
-                            origin_id: arrDestinations[index].id,
-                            destination_id: arrDestinations[index+1].id,
-                            markers: [{ text: originName }, { text: destinationName }],
-                            callback: function(result){
-                                console.log("callback " + index);
-                                result.origin = originName;
-                                result.destination = destinationName;
-                                //result.pricePerMile = 0; // Precio fijo
-                                console.log(result);
-                                jResolve.breakdown.push(result);
-
-                                // Send result
-                                if(index+1 == arrDestinations.length-1){
-                                    resolve(jResolve);
-                                }
-                                else {
-                                    index++;
-                                    _next();
-                                }
-                            }
-                        });
-                    }
-                }
             });
         }
     }
@@ -302,7 +247,7 @@ function getPrice(markers){
             return 2400;
         }
         else if(isBridgeJuarezLincoln(destination)){
-            return 464;
+            return 750;
         }
     } 
     else if(isRamosArizpe(origin)){ 
@@ -342,20 +287,108 @@ function getPrice(markers){
     return 0;
 }
 
+function searchLocations(location, arr) {
+  if (!Array.isArray(arr) || arr.length === 0) return false;
+  return arr.some(element => location.includes(element));
+}
+function isArizona(location){
+    return location.includes("Kingman, AZ") || location.includes('Phoenix, AZ') || location.includes('Sahuarita, AZ') || location.includes('Tucson, AZ') || location.includes('Willcox, AZ')
+}
+function isArkansas(location){
+    return location.includes("Fort Smith, AR") || location.includes('Springdale, AR')
+}
 function isBrimingham(location){
     return location.includes("Birmingham, AL")
+}
+function isColorado(location){
+    return location.includes("Colorado Springs, CO")
 }
 function isDallas(location){
     return location.includes("Dallas, TX") || location.includes("DFW Airport")
 }
+function isFlorida(location){
+    let _includes = searchLocations(location, [", Fort Myers, FL ", "Bradenton, FL", "Brooksville, FL", "Cape Coral, FL", 'Port Charlotte, FL', 'Clearwater, FL', 'Holly Hill, FL', 
+        'Daytona Beach, FL', 'Doral, FL', 'Edgewater, FL', 'Fort Walton Beach, FL', 'Miami Beach, FL', 'Jacksonville, FL', 'Kissimmee, FL', 'Lafayette County, FL']);
+    return _includes || location.endsWith(", FL") || location.endsWith(", FL 32750");
+}
+function isGeorgia(location){
+    let _includes = searchLocations(location, ["Buford, GA"]);
+    return _includes || location.endsWith(", GA")
+}
 function isHouston(location){
     return location.includes("Houston, TX")
+}
+function isIllinois(location){
+    let _includes = searchLocations(location, ["Bloomington, IL", " IL 61364", "IL 60545"]);
+    return _includes || location.endsWith(", IL")
+}
+function isIndiana(location){
+    let _includes = searchLocations(location, ["Bloomington, IN"]);
+    return _includes || location.endsWith(", IN")
+}
+function isKansas(location){
+    let _includes = searchLocations(location, [" KS 67869", " KS 67552"]);
+    return _includes; // || location.endsWith(", IN")
+}
+function isKentucky(location){
+    let _includes = searchLocations(location, ["Louisville, KY"]);
+    return _includes || location.endsWith(", KY")
 }
 function isLaredoTX(location){
     return location.includes("Laredo, TX")
 }
+function isLouisiana(location){
+    let _includes = searchLocations(location, ["Baton Rouge, LA", " LA 70123"]);
+    return _includes || location.endsWith(", LA")
+}
+function isMichigan(location){
+    let _includes = searchLocations(location, ["Howell, MI"]);
+    return _includes || location.endsWith(", MI")
+}
+function isMinnesota(location){
+    let _includes = searchLocations(location, ["Minneapolis, MN"]);
+    return _includes || location.endsWith(", MN")
+} 
+function isMobile_AL(location){
+    return location.includes('Mobile, AL')
+}
+function isMontana(location){
+    let _includes = searchLocations(location, ["Missoula, MT"]);
+    return _includes || location.endsWith(", MT")
+}
 function isMonterrey(location){
     return location.includes("Monterrey") && location.includes("Nuevo Leon")
+}
+function isMontgomery(location){
+    return location.includes("Montgomery, AL")
+}
+function isNewMexico(location){
+    let _includes = searchLocations(location, ["Las Cruces, NM"]);
+    return _includes || location.endsWith(", NM")
+}
+function isNewYork(location){
+    let _includes = searchLocations(location, ["Liberty, NY"]);
+    return _includes || location.endsWith(", NY")
+}
+function isOhio(location){
+    let _includes = searchLocations(location, ["Jeffersonville, OH"]);
+    return _includes || location.endsWith(", OH")
+}
+function isOklahoma(location){
+    let _includes = searchLocations(location, ["Oklahoma City, OK"]);
+    return _includes || location.endsWith(", OK")
+}
+function isPennsylvania(location){
+    let _includes = searchLocations(location, ["East Earl, PA"]);
+    return _includes || location.endsWith(", PA")
+}
+function isSouthCarolina(location){
+    let _includes = searchLocations(location, ["Columbia, SC"]);
+    return _includes || location.endsWith(", SC")
+}
+function isTexas(location){
+    let _includes = searchLocations(location, ["Houston, TX", "Austin, TX", " TX 79029", " TX 78852", "TX 78577", "TX 78582", "TX 79360"]);
+    return _includes || location.endsWith(", TX")
 }
 function isBridgeJuarezLincoln(location){
     return location.includes("Juarez-Lincoln") && location.includes("International Bridge")
@@ -363,5 +396,15 @@ function isBridgeJuarezLincoln(location){
 function isRamosArizpe(location){
     return location.includes("Ramos Arizpe") && location.includes("Coahuila")
 }
+function isWestVirginia(location){
+    let _includes = searchLocations(location, ["Martinsburg, WV"]);
+    return _includes || location.endsWith(", WV")
+}
+function isWisconsin(location){
+    let _includes = searchLocations(location, ["Iron Ridge, WI 53035"]);
+    return _includes || location.endsWith(", WI")
+}
+ 
+
 
 module.exports = { getDirections };
