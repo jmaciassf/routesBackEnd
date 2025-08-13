@@ -20,7 +20,7 @@ async function getDirections(_markers) {
         let bridge = {};
 
         // Verify origin
-        let origin = _markers[0].text, destination = _markers[1].text;
+        let origin = _markers[0].text, jDestination = _markers[1], destination = jDestination.text;
         if(isMonterrey(origin)){
             
             bridge = {
@@ -30,7 +30,7 @@ async function getDirections(_markers) {
 
             let pricePerMile = 0;
             if( isIndiana(destination) || isKentucky(destination) || isMichigan(destination) || isNewYork(destination) || 
-                isPennsylvania(destination) || isWestVirginia(destination) || isOhio(destination) ){
+                isPennsylvania(destination) || isWestVirginia(destination) || isOhio(destination) || isCalifornia(jDestination) ){
                 pricePerMile = 3.2;
             }
             else if( isOklahoma(destination) ){
@@ -52,10 +52,10 @@ async function getDirections(_markers) {
             else if( isArizona(destination) || isMinnesota(destination) ){
                 pricePerMile = 5;
             }
-            else if( isDallas(destination) || isNewMexico(destination) || isTexas(destination) ){
+            else if( isDallas(destination) || isNewMexico(destination) || isTexas(jDestination) ){
                 pricePerMile = 5.5;
             }
-            else if( isColorado(destination) || isMontana(destination) ){
+            else if( isColorado(destination) || isMontana(destination) || isWashington(jDestination) ){
                 pricePerMile = 6;
             }
 
@@ -168,8 +168,6 @@ async function getDirections(_markers) {
                                     duration_seconds: result.duration_seconds + result02.duration_seconds,
                                     price: result.price + result02.price
                                 }
-
-                                // Add price Mty-bridge and bridge-Houston with calculation
                                 resolve(jResolve);
                             }
                         });
@@ -292,13 +290,20 @@ function searchLocations(location, arr) {
   return arr.some(element => location.includes(element));
 }
 function isArizona(location){
-    return location.includes("Kingman, AZ") || location.includes('Phoenix, AZ') || location.includes('Sahuarita, AZ') || location.includes('Tucson, AZ') || location.includes('Willcox, AZ')
+    return location.includes("Kingman, AZ") || location.includes('Phoenix, AZ') || location.includes('Sahuarita, AZ') || 
+        location.includes('Tucson, AZ') || location.includes('Willcox, AZ')
 }
 function isArkansas(location){
     return location.includes("Fort Smith, AR") || location.includes('Springdale, AR')
 }
+function isBridgeJuarezLincoln(location){
+    return location.includes("Juarez-Lincoln") && location.includes("International Bridge")
+}
 function isBrimingham(location){
     return location.includes("Birmingham, AL")
+}
+function isCalifornia(marker){
+    return marker.state == "CA" && marker.country == "US";
 }
 function isColorado(location){
     return location.includes("Colorado Springs, CO")
@@ -386,15 +391,16 @@ function isSouthCarolina(location){
     let _includes = searchLocations(location, ["Columbia, SC"]);
     return _includes || location.endsWith(", SC")
 }
-function isTexas(location){
+function isTexas(marker){
+    return marker.state == "TX" && marker.country == "US";
     let _includes = searchLocations(location, ["Houston, TX", "Austin, TX", " TX 79029", " TX 78852", "TX 78577", "TX 78582", "TX 79360"]);
     return _includes || location.endsWith(", TX")
 }
-function isBridgeJuarezLincoln(location){
-    return location.includes("Juarez-Lincoln") && location.includes("International Bridge")
-}
 function isRamosArizpe(location){
     return location.includes("Ramos Arizpe") && location.includes("Coahuila")
+}
+function isWashington(marker){
+    return marker.state == "WA" && marker.country == "US";
 }
 function isWestVirginia(location){
     let _includes = searchLocations(location, ["Martinsburg, WV"]);
