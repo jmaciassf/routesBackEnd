@@ -29,33 +29,43 @@ async function getDirections(_markers) {
             }
 
             let pricePerMile = 0;
-            if( isIndiana(destination) || isKentucky(destination) || isMichigan(destination) || isNewYork(destination) || 
-                isPennsylvania(destination) || isWestVirginia(destination) || isOhio(destination) || isCalifornia(jDestination) ){
+            if( isIndiana(jDestination) || isKentucky(jDestination) || isMichigan(jDestination) || isNewYork(jDestination) || isConnecticut(jDestination) 
+                || isPennsylvania(jDestination) || isWestVirginia(jDestination) || isOhio(jDestination) || isCalifornia(jDestination)
+                || isDelaware(jDestination) || isMaine(jDestination) || isMaryland(jDestination) || isMassachusetts(jDestination) 
+                || isNewHampshire(jDestination) || isNewJersey(jDestination) || isVirginia(jDestination) || isVermont(jDestination)
+                || isTennessee(jDestination) || isRhodeIsland(jDestination) ){
                 pricePerMile = 3.2;
             }
-            else if( isOklahoma(destination) ){
+            else if( isOklahoma(jDestination) || isNorthCarolina(jDestination) ){
                 pricePerMile = 3.3;
             }
-            else if( isBrimingham(destination) || isMontgomery(destination) || isMobile_AL(destination) || isArkansas(destination) || isIllinois(destination)
-                || isSouthCarolina(destination) || isWisconsin(destination) ){
+            else if( isArkansas(jDestination) || isIllinois(jDestination) || isMississippi(jDestination) || isMissouri(jDestination)
+                || isSouthCarolina(jDestination) || isWisconsin(jDestination) || isAlabama(jDestination) ){
                 pricePerMile = 3.4;
             }                        
-            else if( isKansas(destination) ){
+            else if( isKansas(jDestination) ){
                 pricePerMile = 3.45;
-            }
-            else if( isLouisiana(destination) || isGeorgia(destination) ){
+            }                   
+            else if( isIowa(jDestination) ){
+                pricePerMile = 3.46;
+            }            
+            else if( isLouisiana(jDestination) || isGeorgia(jDestination) ){
                 pricePerMile = 3.5;
             }            
-            else if( isFlorida(destination) ){
+            else if( isFlorida(jDestination) ){
                 pricePerMile = 3.75;
+            }            
+            else if( isNebraska(jDestination) ){
+                pricePerMile = 4.5;
             }
-            else if( isArizona(destination) || isMinnesota(destination) ){
+            else if( isArizona(jDestination) || isMinnesota(jDestination) || isNorthDakota(jDestination) || isSouthDakota(jDestination) ){
                 pricePerMile = 5;
             }
-            else if( isDallas(destination) || isNewMexico(destination) || isTexas(jDestination) ){
+            else if( isNewMexico(jDestination) || isTexas(jDestination) ){
                 pricePerMile = 5.5;
             }
-            else if( isColorado(destination) || isMontana(destination) || isWashington(jDestination) ){
+            else if( isColorado(jDestination) || isMontana(jDestination) || isWashington(jDestination) || isIdaho(jDestination) 
+                || isNevada(jDestination) || isOregon(jDestination) || isWyoming(jDestination) || isUtah(jDestination) ){
                 pricePerMile = 6;
             }
 
@@ -285,132 +295,169 @@ function getPrice(markers){
     return 0;
 }
 
-function searchLocations(location, arr) {
-  if (!Array.isArray(arr) || arr.length === 0) return false;
-  return arr.some(element => location.includes(element));
+// Locations
+function isAlabama(marker){
+    return marker.country == "US" && marker.state == "AL";
 }
-function isArizona(location){
-    return location.includes("Kingman, AZ") || location.includes('Phoenix, AZ') || location.includes('Sahuarita, AZ') || 
-        location.includes('Tucson, AZ') || location.includes('Willcox, AZ')
+function isArizona(marker){
+    return marker.country == "US" && marker.state == "AZ";
 }
-function isArkansas(location){
-    return location.includes("Fort Smith, AR") || location.includes('Springdale, AR')
+function isArkansas(marker){
+    return marker.country == "US" && marker.state == "AR";
 }
 function isBridgeJuarezLincoln(location){
     return location.includes("Juarez-Lincoln") && location.includes("International Bridge")
 }
-function isBrimingham(location){
-    return location.includes("Birmingham, AL")
-}
 function isCalifornia(marker){
-    return marker.state == "CA" && marker.country == "US";
+    return marker.country == "US" && marker.state == "CA";
 }
-function isColorado(location){
-    return location.includes("Colorado Springs, CO")
+function isColorado(marker){
+    return marker.country == "US" && marker.state == "CO";
+}
+function isConnecticut(marker){
+    return marker.country == "US" && marker.state == "CT";
 }
 function isDallas(location){
     return location.includes("Dallas, TX") || location.includes("DFW Airport")
 }
-function isFlorida(location){
-    let _includes = searchLocations(location, [", Fort Myers, FL ", "Bradenton, FL", "Brooksville, FL", "Cape Coral, FL", 'Port Charlotte, FL', 'Clearwater, FL', 'Holly Hill, FL', 
-        'Daytona Beach, FL', 'Doral, FL', 'Edgewater, FL', 'Fort Walton Beach, FL', 'Miami Beach, FL', 'Jacksonville, FL', 'Kissimmee, FL', 'Lafayette County, FL']);
-    return _includes || location.endsWith(", FL") || location.endsWith(", FL 32750");
+function isDelaware(marker){
+    return marker.country == "US" && marker.state == "DE";
 }
-function isGeorgia(location){
-    let _includes = searchLocations(location, ["Buford, GA"]);
-    return _includes || location.endsWith(", GA")
+function isFlorida(marker){
+    return marker.country == "US" && marker.state == "FL";
+}
+function isGeorgia(marker){
+    return marker.country == "US" && marker.state == "GA";
 }
 function isHouston(location){
     return location.includes("Houston, TX")
 }
-function isIllinois(location){
-    let _includes = searchLocations(location, ["Bloomington, IL", " IL 61364", "IL 60545"]);
-    return _includes || location.endsWith(", IL")
+function isIdaho(marker){
+    return marker.country == "US" && marker.state == "ID";
 }
-function isIndiana(location){
-    let _includes = searchLocations(location, ["Bloomington, IN"]);
-    return _includes || location.endsWith(", IN")
+function isIllinois(marker){
+    return marker.country == "US" && marker.state == "IL";
 }
-function isKansas(location){
-    let _includes = searchLocations(location, [" KS 67869", " KS 67552"]);
-    return _includes; // || location.endsWith(", IN")
+function isIndiana(marker){
+    return marker.country == "US" && marker.state == "IN";
 }
-function isKentucky(location){
-    let _includes = searchLocations(location, ["Louisville, KY"]);
-    return _includes || location.endsWith(", KY")
+function isIowa(marker){
+    return marker.country == "US" && marker.state == "IA";
+}
+function isKansas(marker){
+    return marker.country == "US" && marker.state == "KS";
+}
+function isKentucky(marker){
+    return marker.country == "US" && marker.state == "KY";
 }
 function isLaredoTX(location){
     return location.includes("Laredo, TX")
 }
-function isLouisiana(location){
-    let _includes = searchLocations(location, ["Baton Rouge, LA", " LA 70123"]);
-    return _includes || location.endsWith(", LA")
+function isLouisiana(marker){
+    return marker.country == "US" && marker.state == "LA";
 }
-function isMichigan(location){
-    let _includes = searchLocations(location, ["Howell, MI"]);
-    return _includes || location.endsWith(", MI")
+function isMaine(marker){
+    return marker.country == "US" && marker.state == "ME";
 }
-function isMinnesota(location){
-    let _includes = searchLocations(location, ["Minneapolis, MN"]);
-    return _includes || location.endsWith(", MN")
-} 
-function isMobile_AL(location){
-    return location.includes('Mobile, AL')
+function isMaryland(marker){
+    return marker.country == "US" && marker.state == "MD";
 }
-function isMontana(location){
-    let _includes = searchLocations(location, ["Missoula, MT"]);
-    return _includes || location.endsWith(", MT")
+function isMassachusetts(marker){
+    return marker.country == "US" && marker.state == "MA";
+}
+function isMichigan(marker){
+    return marker.country == "US" && marker.state == "MI";
+}
+function isMinnesota(marker){
+    return marker.country == "US" && marker.state == "MN";
+}
+function isMississippi(marker){
+    return marker.country == "US" && marker.state == "MS";
+}
+function isMissouri(marker){
+    return marker.country == "US" && marker.state == "MO";
+}
+function isMontana(marker){
+    return marker.country == "US" && marker.state == "MT";
 }
 function isMonterrey(location){
     return location.includes("Monterrey") && location.includes("Nuevo Leon")
 }
-function isMontgomery(location){
-    return location.includes("Montgomery, AL")
+function isNebraska(marker){
+    return marker.country == "US" && marker.state == "NE";
 }
-function isNewMexico(location){
-    let _includes = searchLocations(location, ["Las Cruces, NM"]);
-    return _includes || location.endsWith(", NM")
+function isNevada(marker){
+    return marker.country == "US" && marker.state == "NV";
 }
-function isNewYork(location){
-    let _includes = searchLocations(location, ["Liberty, NY"]);
-    return _includes || location.endsWith(", NY")
+function isNewHampshire(marker){
+    return marker.country == "US" && marker.state == "NH";
 }
-function isOhio(location){
-    let _includes = searchLocations(location, ["Jeffersonville, OH"]);
-    return _includes || location.endsWith(", OH")
+function isNewJersey(marker){
+    return marker.country == "US" && marker.state == "NJ";
 }
-function isOklahoma(location){
-    let _includes = searchLocations(location, ["Oklahoma City, OK"]);
-    return _includes || location.endsWith(", OK")
+function isNewMexico(marker){
+    return marker.country == "US" && marker.state == "NM";
 }
-function isPennsylvania(location){
-    let _includes = searchLocations(location, ["East Earl, PA"]);
-    return _includes || location.endsWith(", PA")
+function isNewYork(marker){
+    return marker.country == "US" && marker.state == "NY";
 }
-function isSouthCarolina(location){
-    let _includes = searchLocations(location, ["Columbia, SC"]);
-    return _includes || location.endsWith(", SC")
+function isNorthCarolina(marker){
+    return marker.country == "US" && marker.state == "NC";
+}
+function isNorthDakota(marker){
+    return marker.country == "US" && marker.state == "ND";
+}
+function isOhio(marker){
+    return marker.country == "US" && marker.state == "OH";
+}
+function isOklahoma(marker){
+    return marker.country == "US" && marker.state == "OK";
+}
+function isOregon(marker){
+    return marker.country == "US" && marker.state == "OR";
+}
+function isPennsylvania(marker){
+    return marker.country == "US" && marker.state == "PA";
+}
+function isRhodeIsland(marker){
+    return marker.country == "US" && marker.state == "RI";
+}
+function isSouthCarolina(marker){
+    return marker.country == "US" && marker.state == "SC";
+}
+function isSouthDakota(marker){
+    return marker.country == "US" && marker.state == "SD";
+}
+function isTennessee(marker){
+    return marker.country == "US" && marker.state == "TN";
 }
 function isTexas(marker){
-    return marker.state == "TX" && marker.country == "US";
-    let _includes = searchLocations(location, ["Houston, TX", "Austin, TX", " TX 79029", " TX 78852", "TX 78577", "TX 78582", "TX 79360"]);
-    return _includes || location.endsWith(", TX")
+    return marker.country == "US" && marker.state == "TX";
 }
 function isRamosArizpe(location){
     return location.includes("Ramos Arizpe") && location.includes("Coahuila")
 }
+function isUtah(marker){
+    return marker.country == "US" && marker.state == "UT";
+}
+function isVermont(marker){
+    return marker.country == "US" && marker.state == "VT";
+}
+function isVirginia(marker){
+    return marker.country == "US" && marker.state == "VA";
+}
 function isWashington(marker){
-    return marker.state == "WA" && marker.country == "US";
+    return marker.country == "US" && marker.state == "WA";
 }
-function isWestVirginia(location){
-    let _includes = searchLocations(location, ["Martinsburg, WV"]);
-    return _includes || location.endsWith(", WV")
+function isWestVirginia(marker){
+    return marker.country == "US" && marker.state == "WV";
 }
-function isWisconsin(location){
-    let _includes = searchLocations(location, ["Iron Ridge, WI 53035"]);
-    return _includes || location.endsWith(", WI")
+function isWisconsin(marker){
+    return marker.country == "US" && marker.state == "WI";
 }
- 
+function isWyoming(marker){
+    return marker.country == "US" && marker.state == "WY";
+}
 
 
 module.exports = { getDirections };
