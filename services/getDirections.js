@@ -18,74 +18,84 @@ async function getDirections(_markers) {
 
         let splitted = false;
         let bridge = {};
+        let bridge_laredo = {
+            name: "Juarez-Lincoln International Bridge",
+            id: 'ChIJX_GqeisiYYYRsTJLRTR7jb0'
+        }
 
         // Verify origin
-        let origin = _markers[0].text, jDestination = _markers[1], destination = jDestination.text;
-        if(isMonterrey(origin)){
-            
-            bridge = {
-                name: "Juarez-Lincoln International Bridge",
-                id: 'ChIJX_GqeisiYYYRsTJLRTR7jb0'
-            }
-
-            let pricePerMile = 0;
-            if( isIndiana(jDestination) || isKentucky(jDestination) || isMichigan(jDestination) || isNewYork(jDestination) || isConnecticut(jDestination) 
-                || isPennsylvania(jDestination) || isWestVirginia(jDestination) || isOhio(jDestination) || isCalifornia(jDestination)
-                || isDelaware(jDestination) || isMaine(jDestination) || isMaryland(jDestination) || isMassachusetts(jDestination) 
-                || isNewHampshire(jDestination) || isNewJersey(jDestination) || isVirginia(jDestination) || isVermont(jDestination)
-                || isTennessee(jDestination) || isRhodeIsland(jDestination) ){
-                pricePerMile = 3.2;
-            }
-            else if( isOklahoma(jDestination) || isNorthCarolina(jDestination) ){
-                pricePerMile = 3.3;
-            }
-            else if( isArkansas(jDestination) || isIllinois(jDestination) || isMississippi(jDestination) || isMissouri(jDestination)
-                || isSouthCarolina(jDestination) || isWisconsin(jDestination) || isAlabama(jDestination) ){
-                pricePerMile = 3.4;
-            }                        
-            else if( isKansas(jDestination) ){
-                pricePerMile = 3.45;
-            }                   
-            else if( isIowa(jDestination) ){
-                pricePerMile = 3.46;
-            }            
-            else if( isLouisiana(jDestination) || isGeorgia(jDestination) ){
-                pricePerMile = 3.5;
-            }            
-            else if( isFlorida(jDestination) ){
-                pricePerMile = 3.75;
-            }            
-            else if( isNebraska(jDestination) ){
-                pricePerMile = 4.5;
-            }
-            else if( isArizona(jDestination) || isMinnesota(jDestination) || isNorthDakota(jDestination) || isSouthDakota(jDestination) ){
-                pricePerMile = 5;
-            }
-            else if( isNewMexico(jDestination) || isTexas(jDestination) ){
-                pricePerMile = 5.5;
-            }
-            else if( isColorado(jDestination) || isMontana(jDestination) || isWashington(jDestination) || isIdaho(jDestination) 
-                || isNevada(jDestination) || isOregon(jDestination) || isWyoming(jDestination) || isUtah(jDestination) ){
-                pricePerMile = 6;
-            }
-
-            if(pricePerMile){
-                return splitPromise01({
-                    pricePerMile: pricePerMile
-                });
-            }
-        }
-        else if(isRamosArizpe(origin)){
-            if(isHouston(destination)){
+        let jOrigin = _markers[0], origin = jOrigin.text, jDestination = _markers[1], destination = jDestination.text;
+        if(origin != destination){
+            if(isNL(jOrigin) || isMonterrey(jOrigin) || isCDMX(jOrigin)){
                 
-                // Split direction: Ramos Arizpe Coahuila - Juarez-Lincoln International Bridge, Juarez-Lincoln International Bridge - [Houston]
-                bridge = {
-                    name: "Juarez-Lincoln International Bridge",
-                    id: 'ChIJX_GqeisiYYYRsTJLRTR7jb0'
+                bridge = bridge_laredo;
+
+                let pricePerMile = 0;
+                if( isIndiana(jDestination) || isKentucky(jDestination) || isMichigan(jDestination) || isNewYork(jDestination) || isConnecticut(jDestination) 
+                    || isPennsylvania(jDestination) || isWestVirginia(jDestination) || isOhio(jDestination) || isCalifornia(jDestination)
+                    || isDelaware(jDestination) || isMaine(jDestination) || isMaryland(jDestination) || isMassachusetts(jDestination) 
+                    || isNewHampshire(jDestination) || isNewJersey(jDestination) || isVirginia(jDestination) || isVermont(jDestination)
+                    || isTennessee(jDestination) || isRhodeIsland(jDestination) ){
+                    pricePerMile = 3.2;
+                }
+                else if( isOklahoma(jDestination) || isNorthCarolina(jDestination) ){
+                    pricePerMile = 3.3;
+                }
+                else if( isArkansas(jDestination) || isIllinois(jDestination) || isMississippi(jDestination) || isMissouri(jDestination)
+                    || isSouthCarolina(jDestination) || isWisconsin(jDestination) || isAlabama(jDestination) ){
+                    pricePerMile = 3.4;
+                }                        
+                else if( isKansas(jDestination) ){
+                    pricePerMile = 3.45;
+                }                   
+                else if( isIowa(jDestination) ){
+                    pricePerMile = 3.46;
+                }            
+                else if( isLouisiana(jDestination) || isGeorgia(jDestination) ){
+                    pricePerMile = 3.5;
+                }            
+                else if( isFlorida(jDestination) ){
+                    pricePerMile = 3.75;
+                }            
+                else if( isNebraska(jDestination) ){
+                    pricePerMile = 4.5;
+                }
+                else if( isArizona(jDestination) || isMinnesota(jDestination) || isNorthDakota(jDestination) || isSouthDakota(jDestination) ){
+                    pricePerMile = 5;
+                }
+                else if( isNewMexico(jDestination) || isTexas(jDestination) ){
+                    pricePerMile = 5.5;
+                }
+                else if( isColorado(jDestination) || isMontana(jDestination) || isWashington(jDestination) || isIdaho(jDestination) 
+                    || isNevada(jDestination) || isOregon(jDestination) || isWyoming(jDestination) || isUtah(jDestination) ){
+                    pricePerMile = 6;
                 }
 
+                if(pricePerMile){
+                    return splitPromise01({
+                        pricePerMile: pricePerMile
+                    });
+                }
+            }
+            else if(isRamosArizpe(origin)){
+                if(isHouston(destination)){
+                    
+                    // Split direction: Ramos Arizpe Coahuila - Juarez-Lincoln International Bridge, Juarez-Lincoln International Bridge - [Houston]
+                    bridge = bridge_laredo;
+
+                    return splitPromise01({
+                        pricePerMile: 5.5
+                    });
+                }
+            }
+            else if(isUSA(jOrigin)){
+                console.log("isUSA");            
+                bridge = bridge_laredo;
+
+                // Distance 01 - USA to Laredo: $2 x mile
+                // Distance 02 - Laredo to Mty: $750
                 return splitPromise01({
-                    pricePerMile: 5.5
+                    pricePerMile01: 2
                 });
             }
         }
@@ -142,23 +152,30 @@ async function getDirections(_markers) {
             console.log("splitPromise01");
             if(!jData) jData = {}
             return new Promise((resolve) => {
-                // Distance 01 
+                // Distance 01 - Mty to Laredo
                 distancematrix({
                     origin_id: _markers[0].place_id,
                     destination_id: bridge.id,
-                    markers: [{ text: origin }, { text: bridge.name }],
+                    //markers: [{ text: origin }, { text: bridge.name }],
+                    markers: [jOrigin, { text: bridge.name }],
                     callback: function(result){
                         console.log("callback 01");
                         result.origin = origin;
                         result.destination = bridge.name;
-                        result.pricePerMile = 0; // Precio fijo
+                        result.pricePerMile = jData.pricePerMile01 || 0; // Puede ser precio fijo
+
+                        if(result.price == 0){
+                            result.price = result.pricePerMile * result.distance_miles;
+                        }
+
                         console.log(result);
 
-                        // Distance 02 
+                        // Distance 02 - Laredo to USA
                         distancematrix({
                             origin_id: bridge.id,
                             destination_id: _markers[1].place_id,
-                            markers: [{ text: bridge.name }, { text: destination }],
+                            //markers: [{ text: bridge.name }, { text: destination }],
+                            markers: [{ text: bridge.name }, jDestination],
                             callback: function(result02){
                                 console.log("callback 02");
                                 result02.origin = bridge.name;
@@ -241,13 +258,14 @@ async function distancematrix(jData){
 function getPrice(markers){
     console.log("getPrice");
     console.log(markers);
-    let origin = markers[0].text, destination = markers[1].text;
+    let jOrigin = markers[0], origin = jOrigin.text, jDestination = markers[1], destination = jDestination.text;
     if(origin.includes("Nuevo Laredo") && (origin.includes("Tamaulipas") || origin.includes("Tamps.")) ){ 
         if(isDallas(destination)){
             return 2450;
         }    
     }
-    else if(origin.includes("Monterrey")){ 
+    //else if(origin.includes("Monterrey")){ 
+    else if( isNL(jOrigin) ){ 
         if(isDallas(destination)){
             return 3350;
         }
@@ -258,6 +276,17 @@ function getPrice(markers){
             return 750;
         }
     } 
+    else if(isBridgeJuarezLincoln(origin)){
+        if(isNL(jDestination)){
+            return 750;
+        }
+        else if(isMonterrey(jDestination)){
+            return 750;
+        }
+        else if(isCDMX(jDestination)){
+            return 2000;
+        }
+    }
     else if(isRamosArizpe(origin)){ 
         if(isHouston(destination)){
             return 2800;
@@ -292,6 +321,11 @@ function getPrice(markers){
             return 2000;
         }
     }
+    else if(isCDMX(jOrigin)){
+         if(isBridgeJuarezLincoln(destination)){
+            return 2000;
+        }
+    }
     return 0;
 }
 
@@ -310,6 +344,9 @@ function isBridgeJuarezLincoln(location){
 }
 function isCalifornia(marker){
     return marker.country == "US" && marker.state == "CA";
+}
+function isCDMX(marker){
+    return marker.country == "MX" && marker.state == "CDMX";
 }
 function isColorado(marker){
     return marker.country == "US" && marker.state == "CO";
@@ -380,8 +417,11 @@ function isMissouri(marker){
 function isMontana(marker){
     return marker.country == "US" && marker.state == "MT";
 }
-function isMonterrey(location){
-    return location.includes("Monterrey") && location.includes("Nuevo Leon")
+function isMonterrey(marker){
+    return marker.country == "MX" && marker.state == "N.L." && 
+    // Incluir area metropolitana
+    ( marker.text.includes("Monterrey") || marker.text.includes("Apodaca") || marker.text.includes("San Nicolás de los Garza")  || marker.text.includes("Guadalupe") 
+    || marker.text.includes("General Escobedo") );
 }
 function isNebraska(marker){
     return marker.country == "US" && marker.state == "NE";
@@ -400,6 +440,9 @@ function isNewMexico(marker){
 }
 function isNewYork(marker){
     return marker.country == "US" && marker.state == "NY";
+}
+function isNL(marker){
+    return marker.country == "MX" && marker.state == "N.L.";
 }
 function isNorthCarolina(marker){
     return marker.country == "US" && marker.state == "NC";
@@ -436,6 +479,9 @@ function isTexas(marker){
 }
 function isRamosArizpe(location){
     return location.includes("Ramos Arizpe") && location.includes("Coahuila")
+}
+function isUSA(marker){
+    return marker.country == "US";
 }
 function isUtah(marker){
     return marker.country == "US" && marker.state == "UT";
